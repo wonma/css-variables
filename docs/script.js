@@ -1,94 +1,87 @@
-const secHand = document.querySelector('.sec-hand')
-const minHand = document.querySelector('.min-hand')
-const hourHand = document.querySelector('.hour-hand')
-
-const secHandKO = document.querySelector('.sec-hand-ko')
-const minHandKO = document.querySelector('.min-hand-ko')
-const hourHandKO = document.querySelector('.hour-hand-ko')
 
 
-function changeBG(hour, timezone) {
-	let bgColor ='#333'
-	let targetClock =''
+const inputs = document.querySelectorAll('.wrapper input')
+
+function hexToRgbA(hex, version){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        if(version === 'full') {
+        	return `rgba(` + [(c>>16)&255, (c>>8)&255, c&255].join(',') + `)`;
+        } else if(version === 'num') {
+           return [(c>>16)&255, (c>>8)&255, c&255].join(' ');
+        }
+    }
+    throw new Error('Bad Hex');
+}
 
 
-	if(hour >= 4 && hour < 6) {
-		bgColor = 'purple'
-	} else if(hour >= 6 && hour < 16) {
-		bgColor = 'yellow'
-	} else if(hour >= 16 && hour < 18) {
-		bgColor = 'orange'
-	} else if(hour >= 18 && hour < 20) {
-		bgColor = 'darkgrey'
-	} else if(hour >= 20 && hour < 4) {
-		bgColor = 'black'
+function handleChange () {
+	const otherStandard = this.name !== 'color' && keyState === 'on'
+	const colorStandard = this.name === 'color'
+
+	const suffix = this.dataset.sizing || ''
+	if(otherStandard || colorStandard) {
+		if (this.name === 'blur') {
+			document.documentElement.style.setProperty('--blur', this.value + suffix)
+		}
+
+		if (this.name === 'speed') {
+			document.documentElement.style.setProperty('--speed', this.value + suffix)	
+		}
+
+		if (this.name === 'color') {
+			const toRGB = hexToRgbA(this.value, 'full')
+			document.documentElement.style.setProperty('--color', toRGB)		
+		}
+
+		checkCompletion()
 	}
+}
 
-	if(timezone ==='utc') {
-		targetClock = document.querySelector('.clock-body-utc')
+let keyState = 'off'
+
+inputs.forEach((input) => {
+	// event control
+	if (input.type === 'color') {
+		input.addEventListener('change', handleChange)	
 	} else {
-		targetClock = document.querySelector('.clock-body-ko')
+		input.addEventListener('mousedown', () => {
+			keyState = 'on'
+		})
+		input.addEventListener('mouseup', () => {
+			keyState = 'off'
+		})
+		input.addEventListener('mousemove', handleChange)	
 	}
- 
-	targetClock.style.backgroundColor = bgColor
-}
+})
 
 
-function renderHands(angles, timezone) {
+function checkCompletion () {
+	const blurNow = document.querySelector('#blur').value
+	const speedNow = document.querySelector('#speed').value
+	const colorNow = hexToRgbA(document.querySelector('#color').value, 'num')
 
-	const {sec, min, hour} = angles
+	const splitRGB = colorNow.split(' ')
+	const rgbCondition = splitRGB[0] > 230 && splitRGB[1] < 50 && splitRGB[2] < 30
 
-	if (timezone === 'utc') {
-		secHand.style.transform = `rotate(${sec}deg)`
-		minHand.style.transform = `rotate(${min}deg)`
-		hourHand.style.transform = `rotate(${hour}deg)`		
-	} else if (timezone === 'ko') {
-		secHandKO.style.transform = `rotate(${sec}deg)`
-		minHandKO.style.transform = `rotate(${min}deg)`
-		hourHandKO.style.transform = `rotate(${hour}deg)`	
-	}
+	console.log(blurNow, speedNow, rgbCondition)
 
-}
-
-function calTimeAngle(sec, min, hour, timezone) {
-
-	let am = true
-
-	if(hour >= 0 && hour < 13) {
-		const am = true
-	} else if(hour >= 13) {
-		const am = false
-		hour = hour - 12
-	}
-
-	const secAngle = (360 / 60) * sec - 90
-	const minAngle = (360 / 60) * min - 90
-	const hourAngle = (360 / 12) * hour - 90
-
-	const angles = {
-		sec: secAngle,
-		min: minAngle,
-		hour: hourAngle
+	if (blurNow === '0' && speedNow === '0.5' && rgbCondition === true) {
+		
+		console.log('ha')
+		document.querySelector('.message').classList.remove('hide')
+		// const message = document.createElement('p') 
+		// message.textContent = 'I love you!'
+		// message.classList.add('message')
+		// document.querySelector('#wrapper').appendChild(message)
+	} else {
+		document.querySelector('.message').classList.add('hide')
 	}
 
-	renderHands(angles, timezone)
+
 }
-
-function checkTime() {
-
-	const now = new Date()
-	const seconds = now.getUTCSeconds()
-	const minutes = now.getUTCMinutes()
-	let hours = now.getUTCHours()
-
-	const secondsKO = now.getSeconds()
-	const minutesKO = now.getMinutes()
-	let hoursKO = now.getHours()
-
-	calTimeAngle(seconds, minutes, hours, 'utc')
-	calTimeAngle(secondsKO, minutesKO, hoursKO, 'ko')
-	changeBG(hours, 'utc')
-	changeBG(hoursKO, 'ko')
-}
-
-setInterval(checkTime, 1000)

@@ -2,26 +2,33 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>JS Clock</title>
+	<title>CSS Variables and JS</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div class="wrapper">
-		<div class="clock-box clock-box-utc">
-			<div class="clock-body clock-body-utc">
-				UTC
-				<span class="hand hour-hand"></span>
-				<span class="hand min-hand"></span>
-				<span class="hand sec-hand"></span>
+	<div id='wrapper' class="wrapper">
+		<div class="heart-zone">
+			<div class="heart-box">
+			  <div class="heart heart-l"></div>
+			  <div class="heart heart-r"></div>  
 			</div>
 		</div>
-		<div class="clock-box clock-box-ko">
-			<div class="clock-body clock-body-ko">
-				South Korea
-				<span class="hand hour-hand-ko"></span>
-				<span class="hand min-hand-ko"></span>
-				<span class="hand sec-hand-ko"></span>
-			</div>
+		<p class='message hide' >I love you so much!</p>
+		<h2>Make me red, sharp, and fast!!</h2>
+
+		<div>
+			<label>Blur</label>
+			<input id="blur" type="range" name="blur" min="0" max="10" value="10" data-sizing="px">		
+		</div>
+
+		<div>
+			<label>Speed</label>
+			<input id="speed" type="range" name="speed" min=".5" max="2" value="2" step=".5" data-sizing="s">			
+		</div>
+
+		<div>
+			<label>Color</label>
+			<input id="color" type="color" name="color" value="blue">		
 		</div>
 	</div>
 	<script type="text/javascript" src='script.js'></script>

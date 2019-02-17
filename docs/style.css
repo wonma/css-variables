@@ -10,66 +10,111 @@ body {
 	font-family: 'Arial', sans-serif;
 }
 
+:root {
+	--blur: 5px;
+	--speed: 2s;
+	--number: 1;
+	--color: rgb(0, 35, 243);
+}
+
 .wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-wrap: wrap;
+	flex-direction: column;
 	justify-content: space-between;
 	flex: 0 1 32rem;
+}
+
+.message {
+	font-size: 2rem;
+	color: var(--color);
+}
+
+.completed {
+	display: block;
+}
+
+.hide {
+	display: none;
+}
+
+.heart-zone {
+	width: 100%;
+	height: 100px;
+	position: relative;
+}
+
+input {
+	margin-bottom: 2rem;
 }
 
 @media only screen and (max-width:530px){
 	.wrapper {
 		flex: 0 1 100%;
-		flex-direction: column;
-		height: 500px;
 	}
 }
 
-.clock-box {
-	width:230px;
-	height:230px;
-/*	background-color: blue;
-	border: 1px solid red;*/
+
+
+.heart-box {
+  position: absolute;
+  top:10%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
 }
 
-.clock-body {
-/*	background-color: yellow;
-*/	width: 100%;
-	height: 100%;
-	border-radius: 50%;
-	position: relative;
+.heart {
+  background-color: var(--color);
+  position: absolute;
+  filter: blur(var(--blur));
+  width: 30px;
+  height: 50px;
+  border-radius: 40% 50% 10px 55%;
+  transition: all .5s ease-out;
 }
 
-.hand {
-/*	border: 2px solid pink;
-*/	display: block;
-	width: 100px;
-	height: 6px;
-	position: absolute;
-	top: 49.5%;
-	left: 49.5%;
-	transform-origin: 0%;
-	transform: rotate(-90deg);
+.heart-l {
+  transform: rotate(-30deg);
+  animation: beating-l var(--speed) infinite;
 }
 
-.hour-hand, .hour-hand-ko {
-	border: 2px solid red;	
-	width: 80px;
-}
+.heart-r {
+  transform: rotate(30deg);
+  right: 30px;
+  animation: beating-r var(--speed) infinite;
 
-.min-hand, .min-hand-ko {
-	border: 2px solid orange;	
-}
-
-.sec-hand, .sec-hand-ko {
-	background-color: pink;
-	height: 2px;
 }
 
 
+@keyframes beating-l {
+  0% {
+    transform: rotate(-30deg) scale(1);
+  }
+  
+  50% {
+    transform: rotate(-30deg) scale(1.5);    
+  }
+  
+  100% {
+    transform: rotate(-30deg) scale(1);
+  }
+}
 
+@keyframes beating-r {
+  0% {
+    transform: translateX(-7px) rotate(30deg) scale(1);
+  }
+  
+  50% {
+    transform: translateX(0px) rotate(30deg) scale(1.5);    
+  }
+  
+  100% {
+    transform: translateX(-7px) rotate(30deg) scale(1);
+  }
+}
 
 
 
